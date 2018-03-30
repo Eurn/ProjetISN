@@ -1,13 +1,16 @@
 <html>
 
 <head>
-<title></title>
+<title>Map</title>
 <script>
 
 function main() {
+	
 
-	var wall = [];
-	wall
+	
+	var cell_size = 40;
+	
+	var wall =
 	[
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		[0,3,1,3,1,3,3,3,3,3,3,3,1,3,3,3,0],
@@ -22,24 +25,51 @@ function main() {
 		[0,3,3,3,1,3,3,3,3,3,3,1,3,1,1,1,0],
 		[0,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,0],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-	]
-	
+	];
 
 
 
-
-	var can = document.getElementById("dessin");
+	var can = document.getElementById("draw");
 	var pen = can.getContext("2d");
 	
-	pen.rect(50,10,100,200);
-	pen.fillStyle = "red";
+	
+	function display_map(){
+		for(i = 0; i < wall.length; i++){
+
+			for(j = 0; j < wall[i].length; j++){
+			
+				var c = wall[i][j];
+				
+				if(c == 0){
+					pen.fillStyle = "red";
+				}
+				if(c == 1){
+					pen.fillStyle = "blue";
+				}
+				if(c == 2){
+					pen.fillStyle = "yellow";
+				}
+				if(c == 3){
+					pen.fillStyle = "green";
+				}		
+				pen.beginPath();
+				pen.rect(j * cell_size,i * cell_size,cell_size ,cell_size);
+				pen.fill();
+			}
+			
+		}
+	}
+	
+	display_map();
 
 }
 
 </script>
 </head>
 <body onload="main()">
-<p><canvas id="sky" width="800" height="600" style="background: black"></canvas></p>
+
+<p><canvas id="draw" width="800" height="600" style="background: black"></canvas></p>
+
 </body>
 
 </html>
