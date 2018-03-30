@@ -16,14 +16,14 @@
 
 * Déplacement du joueur 1:
 
-- Ku 
-- Kd
-- Hu
-- Hd
-- Ju
-- Jd
-- Lu
-- Ld = touches de déplacement
+- Zu 
+- Zd
+- Qu
+- Qd
+- Su
+- Sd
+- Du
+- Dd = touches de déplacement
 - S1 = vitesse de déplacement
 
 
