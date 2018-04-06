@@ -40,16 +40,16 @@ function main(){
 		function move(){
 			
 				if (pen.onkeydown = "ArrowUp"){
-				players[0].x = palyer[0].x+1;
+				players[0].x = player[0].x+1;
 				}
 				if (pen.onkeydown = "ArrowDown"){
-				players[0].x = palyer[0].x-1;
+				players[0].x = player[0].x-1;
 				}
 				if (pen.onkeydown = "ArrowRight"){
-				players[0].y = palyer[0].y+1;
+				players[0].y = player[0].y+1;
 				}
 				if (pen.onkeydown = "ArrowLeft"){ 
-				players[0].y = palyer[0].y-1;
+				players[0].y = player[0].y-1;
 				}
 				
 				
