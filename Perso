@@ -1,0 +1,79 @@
+<html>
+<head>
+<title></title>
+<script type="text/javascript">
+
+
+
+
+function main(){
+
+	var cell_size = 40;
+
+	var can = document.getElementById("dessin");
+   	var pen = can.getContext("2d");
+	var players = [ {x:0 , y:0},
+				   {x:10 , y:0},
+				 ];
+
+	setInterval(draw,40);
+	document.body.onkeydown = move();
+	
+	
+	function draw() {
+
+		pen.clearRect(0,0,800,600);
+		pen.beginPath();
+		
+		for (var i=0; i<2; i++ ){
+		
+			var p = players[i];
+			var x = p.x * cell_size;
+			var y = p.y * cell_size;
+		
+			pen.fillStyle="yellow";
+			pen.fillRect(x,y,cell_size,cell_size);
+		
+
+		}
+		
+		function move(){
+			
+				if (pen.onkeydown = "ArrowUp"){
+				players[0].x = palyer[0].x+1;
+				}
+				if (pen.onkeydown = "ArrowDown"){
+				players[0].x = palyer[0].x-1;
+				}
+				if (pen.onkeydown = "ArrowRight"){
+				players[0].y = palyer[0].y+1;
+				}
+				if (pen.onkeydown = "ArrowLeft"){ 
+				players[0].y = palyer[0].y-1;
+				}
+				
+				
+			
+				
+		}
+	}
+		
+	
+}
+
+
+
+
+
+</script>
+</head>
+<body onload="main()">
+
+<h1></h1>
+
+<p><canvas id="dessin" width="800" height="600" style="background: black"></canvas></p>
+
+
+
+</body>
+</html> 
