@@ -11,10 +11,13 @@ function main() {
 	
 	var cell_size = 40;
 	
+	var time = 0;
+	var fps = 2;
+	
 	var bombs = 
 	[
-		{x:2,y:2, explose_start: 3, explose_end: 5},
-		{x:5,y:6, explose_start: 3, explose_end: 5},
+		{x: 2,y: 2, explose_start: 3, explose_end: 5},
+		{x: 5,y: 6, explose_start: 3, explose_end: 5},
 		
 	]
 	
@@ -51,7 +54,7 @@ function main() {
 	];
 	
 	
-	function display_map(){
+	function draw_map(){
 		for(i = 0; i < wall.length; i++){
 
 			for(j = 0; j < wall[i].length; j++){
@@ -78,10 +81,42 @@ function main() {
 		}
 	}
 	
-
+	setInterval(draw,40 / fps);
 	
-	display_map();
-	draw_bombs();
+	var players = 
+	[ 
+		{x:1 , y:1},
+		{x:15 , y:11},
+	];
+	
+	function draw() {
+		
+		pen.clearRect(0,0,680,520);
+		draw_map();
+		draw_bombs();
+		pen.beginPath();
+		
+		
+		for (i = 0; i < 2; i++ ){
+		
+			var p = players[i];
+			var x = p.x * cell_size;
+			var y = p.y * cell_size;
+		
+			pen.fillStyle="yellow";
+			pen.fillRect(x,y,cell_size,cell_size);
+		
+		}
+	}
+	
+	while(time < 200){
+	
+		draw();
+		time = time + 40 / fps;
+	}
+	
+	pen.clearRect(0,0,680,520);
+	
 }
 
 </script>
