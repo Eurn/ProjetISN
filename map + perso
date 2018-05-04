@@ -1,0 +1,171 @@
+html>
+
+<head>
+<title>Map</title>
+<script>
+function main() {
+
+	var can = document.getElementById("draw");
+	var pen = can.getContext("2d");
+	var time = 0 
+	var cell_size = 40;
+	var fps = 25;
+	
+	
+	var players = [ {x:3 , y:3},
+				   {x:10 , y:0}
+				 ];
+
+	setInterval(draw, 1000 / fps);
+	
+	
+	
+	var bombs = 
+	[
+		{x: 2,y: 2, explose_start: 3, explose_end: 5},
+		{x: 5,y: 6, explose_start: 3, explose_end: 5},
+		
+	]
+	
+	function draw_bombs(){
+		for(i = 0; i < bombs.length; i++){
+				
+			var b = bombs[i];
+			
+			pen.beginPath();
+			pen.arc(b.x * cell_size + cell_size / 2,b.y * cell_size + cell_size / 2,cell_size / 2,0 * Math.PI,2 * Math.PI);
+			pen.strokeStyle = "white";
+			pen.stroke();
+			pen.fillStyle = "black";
+			pen.fill();
+		}
+	}
+	
+	
+	var wall =
+	[
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,3,1,3,1,3,3,3,3,3,3,3,1,3,3,3,0],
+		[0,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3,0],
+		[0,1,3,3,3,1,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,1,3,1,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,1,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,1,1,3,3,3,3,3,3,3,3,3,1,3,3,0],
+		[0,3,3,3,1,3,3,3,3,3,3,1,3,1,1,1,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+	];
+	
+	
+	function draw_map(){
+		for(i = 0; i < wall.length; i++){
+			for(j = 0; j < wall[i].length; j++){
+			
+				var c = wall[i][j];
+				
+				if(c == 0){
+					pen.fillStyle = "red";
+					
+				}
+				if(c == 1){
+					pen.fillStyle = "blue";
+
+				}
+				if(c == 3){
+					pen.fillStyle = "green";
+				
+				}		
+				pen.beginPath();
+				pen.rect(j * cell_size,i * cell_size,cell_size ,cell_size);
+				pen.fill();
+			}
+			
+		}
+	
+	}
+	
+
+	function draw() {
+		
+		pen.clearRect(0,0,680,520);
+		draw_map();
+		draw_bombs();
+		pen.beginPath();
+		
+		
+		
+			
+		for (var i=0; i<2; i++ ){
+		
+			var p = players[i];
+			var x = p.x * cell_size;
+			var y = p.y * cell_size;
+			
+		
+			
+			pen.fillStyle="yellow";
+			pen.fillRect(x,y,cell_size,cell_size);
+		
+		
+		}
+	}
+	
+	
+	
+	pen.clearRect(0,0,680,520);
+	
+	document.body.onkeydown = move;
+	function move(ev){
+	
+			
+				if (ev.key == "ArrowRight"){
+					players[0].x = players[0].x +1;
+					
+				}
+				if (ev.key == "ArrowLeft"){
+					players[0].x = players[0].x -1;
+					
+				}
+				if (ev.key == "ArrowDown"){
+					players[0].y = players[0].y+ 1;
+					
+				}
+				if (ev.key == "ArrowUp"){ 
+					players[0].y = players[0].y -1;
+					
+				}
+				
+				
+				
+				if (ev.key == "d"){
+					players[1].x =players[1].x+ 1;
+					
+				}
+				if (ev.key == "q"){
+					players[1].x = players[1].x-1;
+					
+				}
+				if (ev.key == "s"){
+					players[1].y =players[1].y +1;
+				
+				}
+				if (ev.key == "z"){ 
+					players[1].y = players[1].y-1;
+					
+				}
+		
+			
+	}
+}
+</script>
+</head>
+<body onload="main()">
+
+<p><canvas id="draw" width="680" height="520" style="background: black"></canvas></p>
+
+</body>
+
+</html>
