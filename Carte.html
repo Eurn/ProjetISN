@@ -3,16 +3,26 @@
 <head>
 <title>Map</title>
 <script>
-
 function main() {
 
 	var can = document.getElementById("draw");
 	var pen = can.getContext("2d");
 	
-	var cell_size = 40;
+	var cell_size = 40; // taille d'une case en pixel
 	
-	var time = 0;
-	var fps = 2;
+	var time = 0; // temps en ms
+	var fps = 25; // images par s
+	
+	var t1 = 2000; // décompte avant explosion en ms 
+	var expl = 2000; // moment d'explosion
+	var expl_d = 1000; // durée d'explosion en ms
+	
+	var players = 
+	[ 
+		{x:3 , y:3},
+		{x:10 , y:0}
+	];
+	
 	
 	var bombs = 
 	[
@@ -56,22 +66,21 @@ function main() {
 	
 	function draw_map(){
 		for(i = 0; i < wall.length; i++){
-
 			for(j = 0; j < wall[i].length; j++){
 			
 				var c = wall[i][j];
 				
 				if(c == 0){
 					pen.fillStyle = "red";
+					
 				}
 				if(c == 1){
 					pen.fillStyle = "blue";
-				}
-				if(c == 2){
-					pen.fillStyle = "yellow";
+
 				}
 				if(c == 3){
 					pen.fillStyle = "green";
+				
 				}		
 				pen.beginPath();
 				pen.rect(j * cell_size,i * cell_size,cell_size ,cell_size);
@@ -79,46 +88,88 @@ function main() {
 			}
 			
 		}
+	
 	}
 	
-	setInterval(draw,40 / fps);
-	
-	var players = 
-	[ 
-		{x:1 , y:1},
-		{x:15 , y:11},
-	];
+	setInterval(draw, 1000 / fps);
 	
 	function draw() {
-		
 		pen.clearRect(0,0,680,520);
-		draw_map();
-		draw_bombs();
-		pen.beginPath();
+		if(time <= 40000){
 		
-		
-		for (i = 0; i < 2; i++ ){
-		
-			var p = players[i];
-			var x = p.x * cell_size;
-			var y = p.y * cell_size;
-		
-			pen.fillStyle="yellow";
-			pen.fillRect(x,y,cell_size,cell_size);
-		
-		}
-	}
-	
-	while(time < 200){
-	
-		draw();
-		time = time + 40 / fps;
-	}
-	
-	pen.clearRect(0,0,680,520);
-	
-}
 
+			draw_map();
+			draw_bombs();
+			pen.beginPath();
+			
+		
+			for (i = 0; i < 2; i++ ){
+		
+				var p = players[i];
+				var x = p.x * cell_size;
+				var y = p.y * cell_size;
+		
+				pen.fillStyle = "yellow";
+				pen.fillRect(x,y,cell_size,cell_size);
+		
+			}
+		time = time + 1000 / fps;
+		
+		}else{
+			
+			// écrire "Time ran out"
+		}
+		/*if(expl < time + t1){
+			draw_bombs();
+		}else{
+			// dessiner une explosion
+		}*/
+	}
+	
+	
+	document.body.onkeydown = move;
+	function move(ev){
+	
+			
+				if (ev.key == "ArrowRight"){
+					players[0].x = players[0].x +1;
+					
+				}
+				if (ev.key == "ArrowLeft"){
+					players[0].x = players[0].x -1;
+					
+				}
+				if (ev.key == "ArrowDown"){
+					players[0].y = players[0].y+ 1;
+					
+				}
+				if (ev.key == "ArrowUp"){ 
+					players[0].y = players[0].y -1;
+					
+				}
+				
+				
+				
+				if (ev.key == "d"){
+					players[1].x =players[1].x+ 1;
+					
+				}
+				if (ev.key == "q"){
+					players[1].x = players[1].x-1;
+					
+				}
+				if (ev.key == "s"){
+					players[1].y =players[1].y +1;
+				
+				}
+				if (ev.key == "z"){ 
+					players[1].y = players[1].y-1;
+					
+				}
+		
+			
+	}
+}
 </script>
 </head>
 <body onload="main()">
