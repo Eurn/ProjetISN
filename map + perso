@@ -10,10 +10,29 @@ function main() {
 	var time = 0 
 	var cell_size = 40;
 	var fps = 25;
+
+	var keys = [
+		{
+			left: "ArrowLeft",
+			right: "ArrowRight",
+			up: "ArrowUp",
+			down: "ArrowDown",
+			bomb: "Enter",
+		},
+		{
+			left: "q",
+			right: "d", 
+			up: "z", 
+			down: "s",
+			bomb:"g",
+		},
+	];
+	
+
 	
 	
 	var players = [ {x:3 , y:3},
-				   {x:10 , y:0}
+				   {x:10 , y:2}
 				 ];
 
 	setInterval(draw, 1000 / fps);
@@ -104,6 +123,7 @@ function main() {
 			var x = p.x * cell_size;
 			var y = p.y * cell_size;
 			
+			
 		
 			
 			pen.fillStyle="yellow";
@@ -120,46 +140,50 @@ function main() {
 	document.body.onkeydown = move;
 	function move(ev){
 	
-			
-				if (ev.key == "ArrowRight"){
-					players[0].x = players[0].x +1;
-					
-				}
-				if (ev.key == "ArrowLeft"){
-					players[0].x = players[0].x -1;
-					
-				}
-				if (ev.key == "ArrowDown"){
-					players[0].y = players[0].y+ 1;
-					
-				}
-				if (ev.key == "ArrowUp"){ 
-					players[0].y = players[0].y -1;
-					
-				}
-				
-				
-				
-				if (ev.key == "d"){
-					players[1].x =players[1].x+ 1;
-					
-				}
-				if (ev.key == "q"){
-					players[1].x = players[1].x-1;
-					
-				}
-				if (ev.key == "s"){
-					players[1].y =players[1].y +1;
-				
-				}
-				if (ev.key == "z"){ 
-					players[1].y = players[1].y-1;
-					
-				}
 		
+			
+				
+			for (var i=0; i<2; i++){
+			
+			
+				var x2 = players[i].x;
+				var y2 = players[i].y;
+				
+				if (ev.key == keys[i].right){
+					x2 = x2 +1;
+					
+				}
+				if (ev.key == keys[i].left){
+					x2 = x2 -1;
+					
+				}
+				if (ev.key == keys[i].down){
+					y2 = y2 +1;
+					
+				}
+				if (ev.key == keys[i].up){ 
+					y2 = y2 -1;
+					
+				}
+				if (ev.key == keys[i].bomb){
+					
+				
+				}
+				
+				console.log(x2, y2, wall[y2][x2]);
+				if (wall[y2][x2] == 3){
+					
+					players[i].x = x2 
+					players[i].y = y2
+				}
+			
+				
+
+			}
 			
 	}
 }
+
 </script>
 </head>
 <body onload="main()">
