@@ -1,0 +1,265 @@
+<html>
+
+<head>
+<title>Map</title>
+<script>
+function main() {
+
+	var can = document.getElementById("draw");
+	var pen = can.getContext("2d");
+	
+	var cell_size = 40; // taille d'une case en pixel
+	
+	var time = 0; // temps en ms
+	var fps = 25; // images par s
+	
+	var keys = [
+		{
+			left: "ArrowLeft",
+			right: "ArrowRight",
+			up: "ArrowUp",
+			down: "ArrowDown",
+			bomb: "Enter",
+		},
+		{
+			left: "q",
+			right: "d", 
+			up: "z", 
+			down: "s",
+			bomb:"g",
+		},
+	]; // déplacement des joueurs
+	
+
+	
+	
+	var players = 
+	[
+		{x:3 , y:3},
+		{x:10 , y:2}
+	]; // coordonnées des 2 joueurs
+	
+	
+	
+	var bombs = 
+	[
+		{x: 0,y: 0, explose_start: 3000, explose_end: 5000},
+		{x: 1,y: 1, explose_start: 3000, explose_end: 5000}
+		
+	] // coordonnées et temps d'explosion des bombes
+	
+	function draw_bombs(){
+		for(i = 0; i < bombs.length; i++){
+				
+			var b = bombs[i];
+			
+			pen.beginPath();
+			pen.arc(b.x * cell_size + cell_size / 2,b.y * cell_size + cell_size / 2,cell_size / 2,0 * Math.PI,2 * Math.PI);
+			pen.strokeStyle = "white";
+			pen.stroke();
+			pen.fillStyle = "black";
+			pen.fill();
+			
+		}
+		
+		if(time < explose_start){
+			draw_bombs();
+		}if(explose_start < time < explose_end){
+			// dessiner une explosion
+
+			
+			for(i = 0; i < wall.length; i++){
+				for(j = 0; j < wall[i].length; j++){
+				
+
+					pen.save();
+					pen.beginPath();
+					pen.fillStyle = "orange";
+					pen.translate((players[i].x + 0.5) * cell_size, (players[i].y + 0.5) * cell_size);
+					pen.lineTo(0, -cell_size / 2);
+					pen.lineTo(cell_size / 2, cell_size / 2);
+					pen.lineTo(-cell_size / 2, cell_size / 2);
+					pen.closePath();
+					pen.fill();
+					pen.restore();
+					
+				
+					var c = wall[i][j];
+					
+					var explose_start = bombs[i].explose_start;
+					var explose_end = bombs[i].explose_end;
+					
+					if(c == 0){
+						c = 0;
+					
+					}
+					if(c == 1){
+						c = 3;
+
+					}
+					if(c == 3){
+						c = 3;
+				
+					}
+					if(players[i].x <= players[i].x + 1){
+						// effacer le joueur du tableau
+					}
+					if(players[i].y <= players[i].x + 1){
+						// effacer le joueur du tableau
+					}
+				}
+			}
+		}else{
+			// effacer la bombe du tableau
+			
+
+				
+			
+		}
+	} 
+	
+	
+	var wall =
+	[
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,3,1,3,1,3,3,3,3,3,3,3,1,3,3,3,0],
+		[0,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3,0],
+		[0,1,3,3,3,1,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,1,3,1,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,1,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
+		[0,3,1,1,3,3,3,3,3,3,3,3,3,1,3,3,0],
+		[0,3,3,3,1,3,3,3,3,3,3,1,3,1,1,1,0],
+		[0,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+	]; // état d'une case de la carte 17 cases de longueur et 13 cases de largeur
+	
+	
+	function draw_map(){
+		for(i = 0; i < wall.length; i++){
+			for(j = 0; j < wall[i].length; j++){
+			
+				var c = wall[i][j];
+				
+				if(c == 0){
+					pen.fillStyle = "red";
+					
+				}
+				if(c == 1){
+					pen.fillStyle = "blue";
+
+				}
+				if(c == 3){
+					pen.fillStyle = "green";
+				
+				}		
+				pen.beginPath();
+				pen.rect(j * cell_size,i * cell_size,cell_size ,cell_size);
+				pen.fill();
+			}
+			
+		}
+	
+	}
+	
+	setInterval(draw, 1000 / fps);
+	
+	function draw() {
+		pen.clearRect(0,0,680,520);
+		if(time <= 400000){
+		
+
+			draw_map();
+			draw_bombs();
+			pen.beginPath();
+			
+		
+			for (i = 0; i < 2; i++ ){
+		
+				var p = players[i];
+				var x = p.x * cell_size;
+				var y = p.y * cell_size;
+		
+				pen.save();
+				pen.beginPath();
+				pen.fillStyle="yellow";
+				pen.translate((players[i].x + 0.5) * cell_size, (players[i].y + 0.5) * cell_size);
+				pen.lineTo(0, -cell_size / 2);
+				pen.lineTo(cell_size / 2, cell_size / 2);
+				pen.lineTo(-cell_size / 2, cell_size / 2);
+				pen.closePath();
+				pen.fill();
+				pen.restore();
+		
+			}
+			time = time + 1000 / fps;
+		
+		}else{
+			
+			// écrire "Time ran out"
+		}
+
+	}
+	
+	
+	document.body.onkeydown = move;
+	function move(ev){
+	
+		
+			
+				
+			for (var i = 0; i < 2; i++){
+			
+			
+				var x2 = players[i].x;
+				var y2 = players[i].y;
+				
+				if (ev.key == keys[i].right){
+					x2 = x2 + 1;
+					
+				}
+				if (ev.key == keys[i].left){
+					x2 = x2 - 1;
+					
+				}
+				if (ev.key == keys[i].down){
+					y2 = y2 + 1;
+					
+				}
+				if (ev.key == keys[i].up){ 
+					y2 = y2 - 1;
+					
+				}
+				if (ev.key == keys[i].bomb){
+				
+					var bomb = {x : x2, y : y2, explose_start: 3000, explose_end: 5000};
+					bombs.push(bomb);
+					console.log(bombs);
+					
+				}
+				
+
+				if (wall[y2][x2] == 3){
+					
+					players[i].x = x2;
+					players[i].y = y2;
+				}
+			
+				
+
+			}
+			
+	}
+}
+
+</script>
+</head>
+<body onload="main()">
+
+<p><canvas id="draw" width="680" height="520" style="background: black"></canvas></p>
+
+</body>
+
+</html>
