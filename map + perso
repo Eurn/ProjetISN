@@ -4,7 +4,7 @@
 <title>Map</title>
 <script>
 function main() {
-
+	
 	var can = document.getElementById("draw");
 	var pen = can.getContext("2d");
 	var time = 0 
@@ -111,7 +111,7 @@ function main() {
 		
 		pen.clearRect(0,0,680,520);
 		draw_map();
-		
+		draw_bombs();
 		pen.beginPath();
 		
 		
@@ -126,8 +126,17 @@ function main() {
 			
 		
 			
+			pen.save();
+			pen.beginPath();
 			pen.fillStyle="yellow";
-			pen.fillRect(x,y,cell_size,cell_size);
+			pen.translate((players[i].x + 0.5) * cell_size, (players[i].y + 0.5) * cell_size);
+			pen.lineTo(0, -cell_size / 2);
+			pen.lineTo(cell_size / 2, cell_size / 2);
+			pen.lineTo(-cell_size / 2, cell_size / 2);
+			pen.closePath();
+			pen.fill();
+			pen.restore();
+			
 		
 		
 		}
@@ -149,7 +158,7 @@ function main() {
 				var x2 = players[i].x;
 				var y2 = players[i].y;
 				
-				if (ev.key == keys[i].right){
+				if (ev.key == keys[i].right ){
 					x2 = x2 +1;
 					
 				}
@@ -166,16 +175,20 @@ function main() {
 					
 				}
 				if (ev.key == keys[i].bomb){
-					players[i].x = draw_bombs();
-					players[i].y = draw_bombs();
 				
+					var bomb = {x : x2, y : y2, explose_start: 3000, explose_end: 5000};
+					bombs.push(bomb);
+					console.log(bombs);
+					
 				}
 				
-				console.log(x2, y2, wall[y2][x2]);
+				
+				
+				
 				if (wall[y2][x2] == 3){
 					
-					players[i].x = x2 
-					players[i].y = y2
+					players[i].x = x2; 
+					players[i].y = y2;
 				}
 			
 				
