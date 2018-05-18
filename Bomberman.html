@@ -41,81 +41,89 @@ function main() {
 	
 	
 	
-	var bombs = 
-	[
-		{x: 0,y: 0, explose_start: 3000, explose_end: 5000},
-		{x: 1,y: 1, explose_start: 3000, explose_end: 5000}
-		
-	] // coordonnées et temps d'explosion des bombes
+	var bombs = [] // coordonnées et temps d'explosion des bombes
 	
 	function draw_bombs(){
 		for(i = 0; i < bombs.length; i++){
 				
 			var b = bombs[i];
-			
-			pen.beginPath();
-			pen.arc(b.x * cell_size + cell_size / 2,b.y * cell_size + cell_size / 2,cell_size / 2,0 * Math.PI,2 * Math.PI);
-			pen.strokeStyle = "white";
-			pen.stroke();
-			pen.fillStyle = "black";
-			pen.fill();
-			
-		}
+			var r = cell_size / 2;
+			pen.save();
+			pen.translate((b.x + 0.5) * cell_size, (b.y + 0.5)* cell_size);
 		
-		if(time < explose_start){
-			draw_bombs();
-		}if(explose_start < time < explose_end){
-			// dessiner une explosion
-
+			//console.log([time, b.explose_start, b.explose_end])
+			if(time < b.explose_start){
 			
-			for(i = 0; i < wall.length; i++){
-				for(j = 0; j < wall[i].length; j++){
+				pen.beginPath();
+				pen.arc(0,0,r,0 * Math.PI,2 * Math.PI);
+				pen.strokeStyle = "white";
+				pen.stroke();
+				pen.fillStyle = "black";
+				pen.fill();
+				pen.closePath();
+				
+			} else if(time < b.explose_end){
+			
+				var k = (time - b.explose_start) / (b.explose_end - b.explose_start);
+				var l = 1 + 2 * k;
+				pen.beginPath();
+				pen.fillStyle = "red";
+				pen.lineTo(-r,-r);
+				pen.lineTo(0,-l*r);
+				pen.lineTo(r,-r);
+				pen.lineTo(r,-r);
+				pen.lineTo(l*r,0);
+				pen.lineTo(r,r);
+				pen.lineTo(r,r);
+				pen.lineTo(0,l*r);
+				pen.lineTo(-r,r);
+				pen.lineTo(-r,r);
+				pen.lineTo(-l*r,0);
+				pen.lineTo(-r,-r);
+				
 				
 
-					pen.save();
-					pen.beginPath();
-					pen.fillStyle = "orange";
-					pen.translate((players[i].x + 0.5) * cell_size, (players[i].y + 0.5) * cell_size);
-					pen.lineTo(0, -cell_size / 2);
-					pen.lineTo(cell_size / 2, cell_size / 2);
-					pen.lineTo(-cell_size / 2, cell_size / 2);
-					pen.closePath();
-					pen.fill();
-					pen.restore();
-					
+				pen.closePath();
+				pen.fill();
+			} else {
+				for(i = 0; i < wall.length; i++){
+					for(j = 0; j < wall[i].length; j++){
 				
-					var c = wall[i][j];
+						if(wall[i][j] == 0){
+							wall[i][j] = 0;
 					
-					var explose_start = bombs[i].explose_start;
-					var explose_end = bombs[i].explose_end;
-					
-					if(c == 0){
-						c = 0;
-					
-					}
-					if(c == 1){
-						c = 3;
+						}
+						else if(wall[i][j] == 1){
+							wall[i][j] = 3;
 
-					}
-					if(c == 3){
-						c = 3;
+						}
+						else if(wall[i][j] == 3){
+							wall[i][j] = 3;
 				
+						}
 					}
-					if(players[i].x <= players[i].x + 1){
+				}
+			}
+				
+			
+			pen.restore();
+		}
+			
+
+					/*if(players[1].x <= players[1].x + 1){
 						// effacer le joueur du tableau
 					}
-					if(players[i].y <= players[i].x + 1){
+					if(players[0].y <= players[0].y + 1){
 						// effacer le joueur du tableau
 					}
 				}
 			}
 		}else{
 			// effacer la bombe du tableau
-			
 
 				
 			
-		}
+		}*/
 	} 
 	
 	
@@ -144,7 +152,7 @@ function main() {
 				var c = wall[i][j];
 				
 				if(c == 0){
-					pen.fillStyle = "red";
+					pen.fillStyle = "gray";
 					
 				}
 				if(c == 1){
@@ -168,6 +176,7 @@ function main() {
 	
 	function draw() {
 		pen.clearRect(0,0,680,520);
+	
 		if(time <= 400000){
 		
 
@@ -185,17 +194,26 @@ function main() {
 				pen.save();
 				pen.beginPath();
 				pen.fillStyle="yellow";
-				pen.translate((players[i].x + 0.5) * cell_size, (players[i].y + 0.5) * cell_size);
+				pen.translate((players[1].x + 0.5) * cell_size, (players[1].y + 0.5) * cell_size);
 				pen.lineTo(0, -cell_size / 2);
 				pen.lineTo(cell_size / 2, cell_size / 2);
 				pen.lineTo(-cell_size / 2, cell_size / 2);
 				pen.closePath();
 				pen.fill();
 				pen.restore();
-		
+				
+				pen.save();
+				pen.beginPath();
+				pen.fillStyle="orange";
+				pen.translate((players[0].x + 0.5) * cell_size, (players[0].y + 0.5) * cell_size);
+				pen.lineTo(0, cell_size / 2);
+				pen.lineTo(-cell_size / 2, -cell_size / 2);
+				pen.lineTo(cell_size / 2, -cell_size / 2);
+				pen.closePath();
+				pen.fill();
+				pen.restore();
 			}
 			time = time + 1000 / fps;
-		
 		}else{
 			
 			// écrire "Time ran out"
@@ -234,9 +252,9 @@ function main() {
 				}
 				if (ev.key == keys[i].bomb){
 				
-					var bomb = {x : x2, y : y2, explose_start: 3000, explose_end: 5000};
+					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 5000};
+					console.log([bomb.x, bomb.y]);
 					bombs.push(bomb);
-					console.log(bombs);
 					
 				}
 				
