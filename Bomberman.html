@@ -9,6 +9,7 @@ function main() {
 	var pen = can.getContext("2d");
 	
 	var cell_size = 40; // taille d'une case en pixel
+	var r = cell_size / 2;
 	
 	var time = 0; // temps en ms
 	var fps = 25; // images par s
@@ -43,11 +44,10 @@ function main() {
 	
 	var bombs = [] // coordonnées et temps d'explosion des bombes
 	
-	function draw_bombs(){
+	function bombs_animation(){
 		for(i = 0; i < bombs.length; i++){
 				
 			var b = bombs[i];
-			var r = cell_size / 2;
 			pen.save();
 			pen.translate((b.x + 0.5) * cell_size, (b.y + 0.5)* cell_size);
 		
@@ -55,18 +55,15 @@ function main() {
 			if(time < b.explose_start){
 			
 				pen.beginPath();
-				pen.arc(0,0,r,0 * Math.PI,2 * Math.PI);
-				pen.strokeStyle = "white";
-				pen.stroke();
-				pen.fillStyle = "black";
+				draw_bomb();
 				pen.fill();
 				pen.closePath();
 				
 			} else if(time < b.explose_end){
 			
+				pen.beginPath();
 				var k = (time - b.explose_start) / (b.explose_end - b.explose_start);
 				var l = 1 + 2 * k;
-				pen.beginPath();
 				pen.fillStyle = "red";
 				pen.lineTo(-r,-r);
 				pen.lineTo(0,-l*r);
@@ -80,52 +77,38 @@ function main() {
 				pen.lineTo(-r,r);
 				pen.lineTo(-l*r,0);
 				pen.lineTo(-r,-r);
-				
-				
-
 				pen.closePath();
 				pen.fill();
 			} else {
-				for(i = 0; i < wall.length; i++){
-					for(j = 0; j < wall[i].length; j++){
-				
-						if(wall[i][j] == 0){
-							wall[i][j] = 0;
-					
-						}
-						else if(wall[i][j] == 1){
-							wall[i][j] = 3;
-
-						}
-						else if(wall[i][j] == 3){
-							wall[i][j] = 3;
-				
-						}
-					}
-				}
+				destroy_wall(b.x + 1, b.y);
+				destroy_wall(b.x - 1, b.y);
+				destroy_wall(b.x, b.y + 1);
+				destroy_wall(b.x, b.y - 1);
 			}
 				
-			
 			pen.restore();
 		}
+		var j = 0;
+		for(i = 0; i < bombs.length; i++){
 			
-
-					/*if(players[1].x <= players[1].x + 1){
-						// effacer le joueur du tableau
-					}
-					if(players[0].y <= players[0].y + 1){
-						// effacer le joueur du tableau
-					}
-				}
+			var b = bombs[i];
+			if(b.explose_end >= time){
+				bombs[j] = b;
+				j = j + 1;
 			}
-		}else{
-			// effacer la bombe du tableau
-
-				
+		}
+		bombs.length = j;
 			
-		}*/
-	} 
+
+	}
 	
+	function draw_bomb(){
+		pen.arc(0,0,r,0 * Math.PI,2 * Math.PI);
+		pen.strokeStyle = "white";
+		pen.stroke();
+		pen.fillStyle = "black";
+	}
+
 	
 	var wall =
 	[
@@ -142,7 +125,13 @@ function main() {
 		[0,3,3,3,1,3,3,3,3,3,3,1,3,1,1,1,0],
 		[0,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,0],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-	]; // état d'une case de la carte 17 cases de longueur et 13 cases de largeur
+	]; // état d'une case de la carte ; 17 cases de longueur et 13 cases de largeur
+	
+	function destroy_wall(xb,yb){
+		if(wall[yb][xb] == 1){
+			wall[yb][xb] = 3;
+		}
+	}
 	
 	
 	function draw_map(){
@@ -172,55 +161,38 @@ function main() {
 	
 	}
 	
-	setInterval(draw, 1000 / fps);
+	function draw_players(){
 	
-	function draw() {
-		pen.clearRect(0,0,680,520);
-	
-		if(time <= 400000){
+		for (i = 0; i < 2; i++ ){
 		
-
-			draw_map();
-			draw_bombs();
+			var p = players[i];
+			var x = p.x * cell_size;
+			var y = p.y * cell_size;
+	
+			pen.save();
 			pen.beginPath();
-			
-		
-			for (i = 0; i < 2; i++ ){
-		
-				var p = players[i];
-				var x = p.x * cell_size;
-				var y = p.y * cell_size;
-		
-				pen.save();
-				pen.beginPath();
-				pen.fillStyle="yellow";
-				pen.translate((players[1].x + 0.5) * cell_size, (players[1].y + 0.5) * cell_size);
-				pen.lineTo(0, -cell_size / 2);
-				pen.lineTo(cell_size / 2, cell_size / 2);
-				pen.lineTo(-cell_size / 2, cell_size / 2);
-				pen.closePath();
-				pen.fill();
-				pen.restore();
+			pen.fillStyle="yellow";
+			pen.translate((players[1].x + 0.5) * cell_size, (players[1].y + 0.5) * cell_size);
+			pen.lineTo(0, -r);
+			pen.lineTo(r, r);
+			pen.lineTo(-r, r);
+			pen.closePath();
+			pen.fill();
+			pen.restore();
 				
-				pen.save();
-				pen.beginPath();
-				pen.fillStyle="orange";
-				pen.translate((players[0].x + 0.5) * cell_size, (players[0].y + 0.5) * cell_size);
-				pen.lineTo(0, cell_size / 2);
-				pen.lineTo(-cell_size / 2, -cell_size / 2);
-				pen.lineTo(cell_size / 2, -cell_size / 2);
-				pen.closePath();
-				pen.fill();
-				pen.restore();
-			}
-			time = time + 1000 / fps;
-		}else{
-			
-			// écrire "Time ran out"
+			pen.save();
+			pen.beginPath();
+			pen.fillStyle="orange";
+			pen.translate((players[0].x + 0.5) * cell_size, (players[0].y + 0.5) * cell_size);
+			pen.lineTo(0, r);
+			pen.lineTo(-r, -r);
+			pen.lineTo(r, -r);
+			pen.closePath();
+			pen.fill();
+			pen.restore();
 		}
-
+			
 	}
-	
 	
 	document.body.onkeydown = move;
 	function move(ev){
@@ -252,9 +224,9 @@ function main() {
 				}
 				if (ev.key == keys[i].bomb){
 				
-					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 5000};
-					console.log([bomb.x, bomb.y]);
+					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 3700};
 					bombs.push(bomb);
+					console.log(bombs.length);
 					
 				}
 				
@@ -269,6 +241,26 @@ function main() {
 
 			}
 			
+	}
+	
+	setInterval(draw, 1000 / fps);
+	
+	function draw() {
+		pen.clearRect(0,0,680,520);
+	
+		if(time <= 400000){
+		
+			draw_map();
+			bombs_animation();
+			pen.beginPath();
+			draw_players();
+			
+			time = time + 1000 / fps;
+		}else{
+			
+			// écrire "Time ran out"
+		}
+
 	}
 }
 
