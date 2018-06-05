@@ -27,7 +27,7 @@ function main() {
 			right: "d", 
 			up: "z", 
 			down: "s",
-			bomb:"g",
+			bomb:" ",
 		},
 	]; // déplacement des joueurs
 	
@@ -36,8 +36,8 @@ function main() {
 	
 	var players = 
 	[
-		{x:3 , y:3},
-		{x:10 , y:2}
+		{x:1 , y:1 , nb: 2},
+		{x:15 , y:11 , nb: 2}
 	]; // coordonnées des 2 joueurs
 	
 	
@@ -80,12 +80,37 @@ function main() {
 				pen.closePath();
 				pen.fill();
 			} else {
-				destroy_wall(b.x + 1, b.y);
-				destroy_wall(b.x - 1, b.y);
-				destroy_wall(b.x, b.y + 1);
-				destroy_wall(b.x, b.y - 1);
+				for (var a = 0; a < 2; a++){
+					var p = players[a];
+					
+					destroy_wall (b.x + 1, b.y);
+					destroy_wall (b.x - 1, b.y);
+					destroy_wall (b.x, b.y + 1);
+					destroy_wall (b.x, b.y - 1);
+					
+					if(b.x == p.x && b.y == p.y ){
+						time = 400000;
+					}
+					if(b.x+1 == p.x && b.y == p.y ){
+						time = 400000;
+					}
+					if(b.x-1 == p.x && b.y == p.y ){
+						time = 400000;
+					}
+					if(b.x == p.x && b.y+1 == p.y ){
+						time = 400000;
+					}
+					if(b.x == p.x && b.y-1 == p.y ){
+						time = 400000;
+					}
+					if (p.nb <2){
+						players[0].nb = players[0].nb + 1;
+						players[1].nb = players[1].nb + 1;
+					}
+				}
 			}
 				
+			
 			pen.restore();
 		}
 		var j = 0;
@@ -113,19 +138,19 @@ function main() {
 	var wall =
 	[
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-		[0,3,1,3,1,3,3,3,3,3,3,3,1,3,3,3,0],
-		[0,1,1,1,3,3,3,3,3,3,3,3,3,3,3,3,0],
-		[0,3,3,3,3,1,1,3,3,3,3,3,3,3,3,3,0],
-		[0,1,3,3,3,1,3,3,3,3,3,3,3,3,3,3,0],
-		[0,3,3,3,3,3,3,3,1,3,1,3,3,3,3,3,0],
-		[0,3,3,3,3,3,3,1,3,3,3,3,3,3,3,3,0],
-		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
-		[0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0],
-		[0,3,1,1,3,3,3,3,3,3,3,3,3,1,3,3,0],
-		[0,3,3,3,1,3,3,3,3,3,3,1,3,1,1,1,0],
-		[0,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,0],
+		[0,3,3,1,1,1,1,1,1,1,1,1,1,1,3,3,0],
+		[0,3,0,1,0,1,0,1,0,1,0,1,0,1,0,3,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0],
+		[0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+		[0,3,0,1,0,1,0,1,0,1,0,1,0,1,0,3,0],
+		[0,3,3,1,1,1,1,1,1,1,1,1,1,1,3,3,0],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-	]; // état d'une case de la carte ; 17 cases de longueur et 13 cases de largeur
+	]; // état d'une case de la carte 17 cases de longueur et 13 cases de largeur
 	
 	function destroy_wall(xb,yb){
 		if(wall[yb][xb] == 1){
@@ -224,7 +249,7 @@ function main() {
 				}
 				if (ev.key == keys[i].bomb){
 				
-					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 3700};
+					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 3400};
 					bombs.push(bomb);
 					console.log(bombs.length);
 					
@@ -243,12 +268,46 @@ function main() {
 			
 	}
 	
+
+	
+	var text_position = [0,0.5,1];
+	
+	function write_text(text,font,a,xt,yt){
+		for(i = 0; i < text_position.length; i++){
+			var v = text_position[i];
+			pen.font = font;
+			var metrics = pen.measureText(text);
+			pen.fillStyle = "white";
+			pen.strokeStyle = "purple";
+			
+			if(v == 0){
+				pen.beginPath();
+				pen.rect(0+cell_size,0,2*cell_size,cell_size);
+				pen.closePath();
+			}
+			else if(v == 0.5){
+				pen.beginPath();
+				pen.rect(680/2-cell_size,0,2*cell_size,cell_size);
+				pen.closePath();
+			}
+			else if(v == 1){
+				pen.beginPath();
+				pen.rect(680-(3*cell_size),0,2*cell_size,cell_size);
+				pen.closePath();
+			}
+		
+		pen.fill();
+		pen.stroke();
+		}
+	}
+	
 	setInterval(draw, 1000 / fps);
 	
 	function draw() {
 		pen.clearRect(0,0,680,520);
-	
-		if(time <= 400000){
+		write_text("Game over","80px Sans",0.5,140,270);
+		
+		if(time <= 400000){ 
 		
 			draw_map();
 			bombs_animation();
@@ -257,8 +316,10 @@ function main() {
 			
 			time = time + 1000 / fps;
 		}else{
-			
-			// écrire "Time ran out"
+		
+			pen.font = "80px Sans";
+			pen.fillStyle = "red";
+			pen.fillText("Game over",140,270);
 		}
 
 	}
@@ -269,7 +330,12 @@ function main() {
 <body onload="main()">
 
 <p><canvas id="draw" width="680" height="520" style="background: black"></canvas></p>
-
+<p><strong>Touches: joueur 1 / joueur 2</strong></p>
+<p><strong>Droite: flèche directionnelle droite / d</strong></p>
+<p><strong>Gauche: flèche directionnelle gauche / q</strong></p>
+<p><strong>Haut: flèche directionnelle haut / z</strong></p>
+<p><strong>Bas: flèche directionnelle bas / s</strong></p>
+<p><strong>Bombes: Entrée / Barre espace</strong></p>
 </body>
 
 </html>
