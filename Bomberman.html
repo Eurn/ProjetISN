@@ -249,9 +249,13 @@ function main() {
 				}
 				if (ev.key == keys[i].bomb){
 				
-					var bomb = {x : x2, y : y2, explose_start: time + 3000, explose_end: time + 3400};
-					bombs.push(bomb);
-					console.log(bombs.length);
+					if(p.nb > 0){
+						p.nb = p.nb -1;
+						var bomb = {x : x2, y : y2, explose_start: time + 1500, explose_end: time + 1800};
+						console.log([bomb.x, bomb.y] );
+						bombs.push(bomb);
+					
+					}
 					
 				}
 				
