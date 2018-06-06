@@ -4,7 +4,6 @@
 <title>Map</title>
 <script>
 function main() {
-
 	var can = document.getElementById("draw");
 	var pen = can.getContext("2d");
 	
@@ -16,28 +15,27 @@ function main() {
 	
 	var keys = [
 		{
+			left: "q",
+			right: "d",
+			up: "z",
+			down: "s",
+			bomb: " ",
+		},
+		{
 			left: "ArrowLeft",
 			right: "ArrowRight",
 			up: "ArrowUp",
 			down: "ArrowDown",
 			bomb: "Enter",
 		},
-		{
-			left: "q",
-			right: "d", 
-			up: "z", 
-			down: "s",
-			bomb:" ",
-		},
 	]; // déplacement des joueurs
 	
-
 	
 	
 	var players = 
 	[
-		{x:1 , y:1 , nb: 2},
-		{x:15 , y:11 , nb: 2}
+		{x:1 , y:1 , nb: 1},
+		{x:15 , y:11 , nb: 1}
 	]; // coordonnées des 2 joueurs
 	
 	
@@ -78,7 +76,11 @@ function main() {
 				pen.lineTo(-l*r,0);
 				pen.lineTo(-r,-r);
 				pen.closePath();
-				pen.fill();
+				pen.fill(); //dessin explosion bombes
+				
+				
+				
+				
 			} else {
 				for (var a = 0; a < 2; a++){
 					var p = players[a];
@@ -89,19 +91,19 @@ function main() {
 					destroy_wall (b.x, b.y - 1);
 					
 					if(b.x == p.x && b.y == p.y ){
-						time = 400000;
+						time = 600;
 					}
 					if(b.x+1 == p.x && b.y == p.y ){
-						time = 400000;
+						time = 600;
 					}
 					if(b.x-1 == p.x && b.y == p.y ){
-						time = 400000;
+						time = 600;
 					}
 					if(b.x == p.x && b.y+1 == p.y ){
-						time = 400000;
+						time = 600;
 					}
 					if(b.x == p.x && b.y-1 == p.y ){
-						time = 400000;
+						time = 600;
 					}
 					if (p.nb <2){
 						players[0].nb = players[0].nb + 1;
@@ -124,7 +126,6 @@ function main() {
 		}
 		bombs.length = j;
 			
-
 	}
 	
 	function draw_bomb(){
@@ -133,7 +134,6 @@ function main() {
 		pen.stroke();
 		pen.fillStyle = "black";
 	}
-
 	
 	var wall =
 	[
@@ -171,7 +171,6 @@ function main() {
 				}
 				if(c == 1){
 					pen.fillStyle = "blue";
-
 				}
 				if(c == 3){
 					pen.fillStyle = "green";
@@ -185,6 +184,8 @@ function main() {
 		}
 	
 	}
+	
+	setInterval(draw,1000 / fps);
 	
 	function draw_players(){
 	
@@ -222,14 +223,14 @@ function main() {
 	document.body.onkeydown = move;
 	function move(ev){
 	
-		
+		console.log(ev.key );
 			
 				
 			for (var i = 0; i < 2; i++){
 			
-			
-				var x2 = players[i].x;
-				var y2 = players[i].y;
+				var p = players[i]
+				var x2 = p.x;
+				var y2 = p.y;
 				
 				if (ev.key == keys[i].right){
 					x2 = x2 + 1;
@@ -249,9 +250,10 @@ function main() {
 				}
 				if (ev.key == keys[i].bomb){
 				
+					
 					if(p.nb > 0){
 						p.nb = p.nb -1;
-						var bomb = {x : x2, y : y2, explose_start: time + 1500, explose_end: time + 1800};
+						var bomb = {x : x2, y : y2, explose_start: time + 0.6, explose_end: time + 0.9};
 						console.log([bomb.x, bomb.y] );
 						bombs.push(bomb);
 					
@@ -259,20 +261,17 @@ function main() {
 					
 				}
 				
-
 				if (wall[y2][x2] == 3){
 					
-					players[i].x = x2;
-					players[i].y = y2;
+					p.x = x2;
+					p.y = y2;
 				}
 			
 				
-
 			}
 			
 	}
 	
-
 	
 	var text_position = [0,0.5,1];
 	
@@ -281,54 +280,45 @@ function main() {
 			var v = text_position[i];
 			pen.font = font;
 			var metrics = pen.measureText(text);
+			
+			pen.beginPath();
+			pen.rect(680/2-cell_size,0,2*cell_size,cell_size);
+			pen.closePath();
 			pen.fillStyle = "white";
 			pen.strokeStyle = "purple";
-			
-			if(v == 0){
-				pen.beginPath();
-				pen.rect(0+cell_size,0,2*cell_size,cell_size);
-				pen.closePath();
-			}
-			else if(v == 0.5){
-				pen.beginPath();
-				pen.rect(680/2-cell_size,0,2*cell_size,cell_size);
-				pen.closePath();
-			}
-			else if(v == 1){
-				pen.beginPath();
-				pen.rect(680-(3*cell_size),0,2*cell_size,cell_size);
-				pen.closePath();
-			}
-		
-		pen.fill();
-		pen.stroke();
+			pen.fill();
+			pen.stroke();
+			pen.font = "15px Sans";
+			pen.fillStyle = "black";
+			pen.fillText(Math.floor(time),7.65*cell_size,0.65*cell_size);
+
+
 		}
 	}
 	
-	setInterval(draw, 1000 / fps);
+	setInterval(draw, 1000/fps);
 	
 	function draw() {
 		pen.clearRect(0,0,680,520);
-		write_text("Game over","80px Sans",0.5,140,270);
 		
-		if(time <= 400000){ 
+		
+		if(time <= 600){ 
 		
 			draw_map();
 			bombs_animation();
 			pen.beginPath();
 			draw_players();
+			write_text();
 			
-			time = time + 1000 / fps;
+			time = time + 1/(2*fps);
 		}else{
 		
 			pen.font = "80px Sans";
 			pen.fillStyle = "red";
 			pen.fillText("Game over",140,270);
 		}
-
 	}
 }
-
 </script>
 </head>
 <body onload="main()">
