@@ -10,7 +10,7 @@ function main() {
 	var cell_size = 40; // taille d'une case en pixel
 	var r = cell_size / 2;
 	
-	var time = 0; // temps en ms
+	var time = 600; // temps en s
 	var fps = 25; // images par s
 	
 	var keys = [
@@ -34,8 +34,8 @@ function main() {
 	
 	var players = 
 	[
-		{x:1 , y:1 , nb: 1},
-		{x:15 , y:11 , nb: 1}
+		{x:1 , y:1 , nb: 1, dead :0},
+		{x:15 , y:11 , nb: 1, dead :0}
 	]; // coordonnées des 2 joueurs
 	
 	
@@ -50,14 +50,14 @@ function main() {
 			pen.translate((b.x + 0.5) * cell_size, (b.y + 0.5)* cell_size);
 		
 			//console.log([time, b.explose_start, b.explose_end])
-			if(time < b.explose_start){
+			if(time > b.explose_start){
 			
 				pen.beginPath();
 				draw_bomb();
 				pen.fill();
 				pen.closePath();
 				
-			} else if(time < b.explose_end){
+			} else if(time > b.explose_end){
 			
 				pen.beginPath();
 				var k = (time - b.explose_start) / (b.explose_end - b.explose_start);
@@ -91,20 +91,26 @@ function main() {
 					destroy_wall (b.x, b.y - 1);
 					
 					if(b.x == p.x && b.y == p.y ){
-						time = 600;
+						p.dead = 1;
+						time = 0;
 					}
 					if(b.x+1 == p.x && b.y == p.y ){
-						time = 600;
+						p.dead = 1;
+						time = 0;
 					}
 					if(b.x-1 == p.x && b.y == p.y ){
-						time = 600;
+						p.dead = 1;
+						time = 0;
 					}
 					if(b.x == p.x && b.y+1 == p.y ){
-						time = 600;
+						p.dead = 1;
+						time = 0;
 					}
 					if(b.x == p.x && b.y-1 == p.y ){
-						time = 600;
+						p.dead = 1;
+						time = 0;
 					}
+					
 					if (p.nb <2){
 						players[0].nb = players[0].nb + 1;
 						players[1].nb = players[1].nb + 1;
@@ -119,7 +125,7 @@ function main() {
 		for(i = 0; i < bombs.length; i++){
 			
 			var b = bombs[i];
-			if(b.explose_end >= time){
+			if(b.explose_end<= time){
 				bombs[j] = b;
 				j = j + 1;
 			}
@@ -253,7 +259,7 @@ function main() {
 					
 					if(p.nb > 0){
 						p.nb = p.nb -1;
-						var bomb = {x : x2, y : y2, explose_start: time + 0.6, explose_end: time + 0.9};
+						var bomb = {x : x2, y : y2, explose_start: time - 0.6, explose_end: time - 0.9};
 						console.log([bomb.x, bomb.y] );
 						bombs.push(bomb);
 					
@@ -273,11 +279,11 @@ function main() {
 	}
 	
 	
-	var text_position = [0,0.5,1];
+
 	
 	function write_text(text,font,a,xt,yt){
-		for(i = 0; i < text_position.length; i++){
-			var v = text_position[i];
+
+
 			pen.font = font;
 			var metrics = pen.measureText(text);
 			
@@ -293,7 +299,7 @@ function main() {
 			pen.fillText(Math.floor(time),7.65*cell_size,0.65*cell_size);
 
 
-		}
+		
 	}
 	
 	setInterval(draw, 1000/fps);
@@ -302,7 +308,7 @@ function main() {
 		pen.clearRect(0,0,680,520);
 		
 		
-		if(time <= 600){ 
+		if(time >= 0){ 
 		
 			draw_map();
 			bombs_animation();
@@ -310,13 +316,26 @@ function main() {
 			draw_players();
 			write_text();
 			
-			time = time + 1/(2*fps);
+			time = time - 1/(2*fps);
 		}else{
-		
-			pen.font = "80px Sans";
-			pen.fillStyle = "red";
-			pen.fillText("Game over",140,270);
+			
+				if (players[0].dead == 1){
+					
+					pen.font = "80px Sans";
+					pen.fillStyle = "red";
+					pen.fillText("Game over" ,140,270);
+					pen.fillText("player 1 win",140,350);
+				}
+				if (players[1].dead == 1){
+					
+					pen.font = "80px Sans";
+					pen.fillStyle = "red";
+					pen.fillText("Game over" ,140,270);
+					pen.fillText("player 2 win",140,350);
+				}
+			
 		}
+		
 	}
 }
 </script>
